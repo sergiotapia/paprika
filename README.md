@@ -6,7 +6,7 @@ served via REST API.
 Paprika is really simple to use. All you need to do is attach
 your structs to it and it'll handle the rest.
 
---- go
+``` go
 package main
 
 import (
@@ -26,7 +26,7 @@ func main() {
     paprika.Start("8080")
     log.Print("Paprika is up and running.")
 }
----
+```
 
 ## How does it work?
 
