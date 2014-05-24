@@ -1,3 +1,7 @@
+# Paprika
+
+[![wercker status](https://app.wercker.com/status/26dc4fdf8656d6a2ed65358c1c322865/m/master "wercker status")](https://app.wercker.com/project/bykey/26dc4fdf8656d6a2ed65358c1c322865)
+
 Sprinkle some paprika over your models and instantly have it 
 served via REST API.
 
