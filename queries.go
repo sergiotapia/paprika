@@ -1,26 +1,26 @@
 package paprika
 
 import (
-	"reflect"
-	"strings"
+  "reflect"
+  "strings"
 )
 
 func createListQuery(resource interface{}) string {
-	resourceType := reflect.TypeOf(resource)
+  resourceType := reflect.TypeOf(resource)
 
-	// Grab the resource struct Name.
-	fullName := resourceType.String()
-	name := strings.ToLower(fullName[strings.Index(fullName, ".")+1:])
+  // Grab the resource struct Name.
+  fullName := resourceType.String()
+  name := strings.ToLower(fullName[strings.Index(fullName, ".")+1:])
 
-	query := "SELECT "
+  query := "SELECT "
 
-	for fieldName, _ := range schema[name] {
-		query += fieldName + ", "
-	}
+  for fieldName, _ := range schema[name] {
+    query += fieldName + ", "
+  }
 
-	query = query[:len(query)-2] + " "
-	query += "FROM "
-	query += name
+  query = query[:len(query)-2] + " "
+  query += "FROM "
+  query += name
 
-	return query
+  return query
 }

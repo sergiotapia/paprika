@@ -1,16 +1,17 @@
 package paprika
 
 import (
-	"database/sql"
+	"encoding/json"
 	"fmt"
-	_ "github.com/lib/pq"
-	"io/ioutil"
 	"os"
 
-	"github.com/BurntSushi/toml"
+	// Import pg to support postgres database.
+	_ "github.com/lib/pq"
 )
 
-type DatabaseSetting struct {
+// DatabaseConfiguration is a struct that represents the database
+// configuration set in conf.json.
+type DatabaseConfiguration struct {
 	DbName         string
 	User           string
 	Password       string
@@ -18,40 +19,38 @@ type DatabaseSetting struct {
 	Port           string
 	SslMode        string
 	ConnectTimeout string
+	SslCert        string
+	SslKey         string
+	SslRootCert    string
 }
 
-var databaseSetting DatabaseSetting
+var databaseConfiguration DatabaseConfiguration
 
-func initDb() *sql.DB {
-	connectionString := formatConnectionString(databaseSetting)
-	DB, err := sql.Open("postgres", connectionString)
+func init() {
+	file, _ := os.Open("conf.json")
+	decoder := json.NewDecoder(file)
+	err := decoder.Decode(&databaseConfiguration)
 	if err != nil {
-		fmt.Println("Could not open connection to the database.")
+		fmt.Println("Error decoding conf.json:", err)
 		os.Exit(0)
 	}
-	return DB
 }
 
-func formatConnectionString(databaseSetting DatabaseSetting) string {
-	// TODO: Detect what TOML settings were written in
-	// and build appropriate connection string.
-
-	// For now, let's go with the basics.
-	connectionString := fmt.Sprintf("dbname=%s host=%s port=%s sslmode=disable", databaseSetting.DbName, databaseSetting.Host, databaseSetting.Port)
-	return connectionString
-}
-
-func loadDatabaseConfiguration() {
-	tomlData, err := ioutil.ReadFile("database.toml")
-	if err != nil {
-		fmt.Println("Could not find database.toml settings file.")
-		os.Exit(0)
-	}
-
-	if _, err := toml.Decode(string(tomlData), &databaseSetting); err != nil {
-		fmt.Println("The database.toml file is not formatted properly.")
-		os.Exit(0)
-	}
-
-	initDb()
-}
+// func initDb() *sql.DB {
+//   connectionString := formatConnectionString(databaseSetting)
+//   DB, err := sql.Open("postgres", connectionString)
+//   if err != nil {
+//     fmt.Println("Could not open connection to the database.")
+//     os.Exit(0)
+//   }
+//   return DB
+// }
+//
+// func formatConnectionString(databaseSetting DatabaseSetting) string {
+//   // TODO: Detect what TOML settings were written in
+//   // and build appropriate connection string.
+//
+//   // For now, let's go with the basics.
+//   connectionString := fmt.Sprintf("dbname=%s host=%s port=%s sslmode=disable", databaseSetting.DbName, databaseSetting.Host, databaseSetting.Port)
+//   return connectionString
+// }
